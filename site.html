@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análise Probabilística: Tolerância de Resistores</title>
+  
+  <!-- Fontes Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js para o Gráfico do Histograma -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- KaTeX para Renderização de Fórmulas Matemáticas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-card: #121824;
+      --border-color: #1e293b;
+      --accent-cyan: #00f2fe;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 2rem;
+      }
+    }
+
+    header {
+      max-width: 1200px;
+      margin: 0 auto 2rem auto;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      color: var(--accent-cyan);
+      font-family: 'Fira Code', monospace;
+    }
+
+    @media (min-width: 768px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    .badge {
+      background: rgba(0, 242, 254, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-family: 'Fira Code', monospace;
+      align-self: flex-start;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      main {
+        grid-template-columns: 340px 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 1.5rem;
+      }
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--accent-cyan);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .control-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .control-group input, .control-group select {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.65rem;
+      border-radius: 6px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      padding: 0.85rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-card .value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .stat-card .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+
+    .val-green { color: var(--accent-green); }
+    .val-red { color: var(--accent-red); }
+    .val-cyan { color: var(--accent-cyan); }
+
+    .chart-container {
+      position: relative;
+      height: 280px;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 350px;
+      }
+    }
+
+    .script-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .timeline-item {
+      border-left: 3px solid var(--accent-cyan);
+      padding-left: 1rem;
+    }
+
+    .timeline-time {
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+    }
+
+    .timeline-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin: 0.25rem 0;
+    }
+
+    .timeline-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .video-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .video-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+    }
+
+    .video-card h3 {
+      font-size: 0.875rem;
+      color: var(--accent-cyan);
+      margin-bottom: 0.6rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .math-block {
+      background: #0f172a;
+      padding: 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>⚡ Probabilidade na Engenharia: Tolerância de Resistores</h1>
+    <span class="badge">Apresentação: 3 Minutos</span>
+  </header>
+
+  <main>
+    <!-- PAINEL DE PARÂMETROS -->
+    <section class="card">
+      <h2>⚙️ Parâmetros de Simulação</h2>
+      
+      <div class="control-group">
+        <label for="sampleSize">Tamanho do Lote (N)</label>
+        <input type="number" id="sampleSize" value="10000" step="1000" min="1000" max="50000">
+      </div>
+
+      <div class="control-group">
+        <label for="nominal">Resistência Nominal (Ω)</label>
+        <input type="number" id="nominal" value="1000" step="50">
+      </div>
+
+      <div class="control-group">
+        <label for="tolerance">Tolerância (±%)</label>
+        <input type="number" id="tolerance" value="5" step="0.5" min="0.1" max="20">
+      </div>
+
+      <div class="control-group">
+        <label for="sigmaLevel">Nível Sigma de Fábrica</label>
+        <select id="sigmaLevel">
+          <option value="1">1 Sigma (68.27% Aprovados)</option>
+          <option value="2">2 Sigmas (95.45% Aprovados)</option>
+          <option value="3" selected>3 Sigmas (99.73% Aprovados - Padrão)</option>
+          <option value="4">4 Sigmas (99.993% Aprovados)</option>
+        </select>
+      </div>
+
+      <button class="btn" onclick="runSimulation()">Simular Lote</button>
+    </section>
+
+    <!-- HISTOGRAMA E MÉTRICAS -->
+    <section class="card">
+      <h2>📊 Simulação de Monte Carlo ($X \sim \mathcal{N}(\mu, \sigma^2)$)</h2>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="value val-green" id="approvedCount">-</div>
+          <div class="label">Aprovados</div>
+        </div>
+        <div class="stat-card">
+          <div class="value val-red" id="rejectedCount">-</div>
+          <div class="label">Rejeitados</div>
+        </div>
+        <div class="stat-card">
+          <div class="value val-cyan" id="experimentalProb">-</div>
+          <div class="label">Prob. Experimental</div>
+        </div>
+        <div class="stat-card">
+          <div class="value" style="color: #a855f7;" id="theoreticalProb">-</div>
+          <div class="label">Prob. Teórica</div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="resistorChart"></canvas>
+      </div>
+    </section>
+
+    <!-- ROTEIRO DA APRESENTAÇÃO -->
+    <section class="card full-width">
+      <h2>⏱️ Roteiro de Apresentação (3 Minutos)</h2>
+      
+      <div class="script-timeline">
+        <div class="timeline-item">
+          <div class="timeline-time">00:00 - 00:45</div>
+          <div class="timeline-title">1. O Problema Prático na Engenharia</div>
+          <div class="timeline-desc">
+            "Um resistor nominal de $1\text{ k}\Omega$ não possui exatamente $1000\,\Omega$ na prática. Devido a variações do processo produtivo, uma tolerância de $\pm 5\%$ define o intervalo aceitável entre $950\,\Omega$ e $1050\,\Omega$."
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-time">00:45 - 01:45</div>
+          <div class="timeline-title">2. Modelagem Gaussiana ($3\sigma$)</div>
+          <div class="timeline-desc">
+            "Modelamos o valor da resistência $X$ como uma Variável Aleatória Contínua $X \sim \mathcal{N}(\mu, \sigma^2)$. Projetando a linha para que os limites de $\pm 50\,\Omega$ correspondam a $3\sigma$, obtemos um desvio-padrão $\sigma = 16{,}67\,\Omega$."
+          </div>
+          <div class="math-block">
+            $$\text{Distribuição: } X \sim \mathcal{N}(1000;\, 16{,}67^2)$$
+            $$P(950 \le X \le 1050) = P\left(\frac{950 - 1000}{16{,}67} \le Z \le \frac{1050 - 1000}{16{,}67}\right) = P(-3 \le Z \le 3)$$
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-time">01:45 - 02:30</div>
+          <div class="timeline-title">3. Resultados da Simulação</div>
+          <div class="timeline-desc">
+            "Teoricamente, a área no intervalo de $[-3\sigma, +3\sigma]$ é de **99,73%**. Ao gerar 10.000 componentes por Monte Carlo, obtemos aproximadamente **9.973 resistores aprovados** e cerca de **27 rejeitados**."
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-time">02:30 - 03:00</div>
+          <div class="timeline-title">4. Conclusão Industrial</div>
+          <div class="timeline-desc">
+            "Essa análise probabilística permite calcular o *yield* (taxa de aproveitamento) de fabricação e prever o comportamento de circuitos em larga escala sem custos de prototipagem física."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO DE VÍDEOS REAIS DO YOUTUBE -->
+    <section class="card full-width">
+      <h2>🎥 Vídeos Recomendados de Acompanhamento</h2>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">
+        Exemplos teóricos e simulações em softwares da área de eletrônica.
+      </p>
+
+      <div class="video-grid">
+        <div class="video-card">
+          <h3>EEVblog #215 - Gaussian Resistors</h3>
+          <div class="video-wrapper">
+            <iframe 
+              src="https://www.youtube.com/embed/1WAhTdWErrU" 
+              title="EEVblog #215 - Gaussian Resistors" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <h3>Produção e Tolerância de 1000 Ω</h3>
+          <div class="video-wrapper">
+            <iframe 
+              src="https://www.youtube.com/embed/P9Xca4xxyVU" 
+              title="Probability 1000 Ohm Resistor Production" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <h3>LTSpice Monte Carlo & Gaussian</h3>
+          <div class="video-wrapper">
+            <iframe 
+              src="https://www.youtube.com/embed/j08mztePzHE" 
+              title="LTSpice Tolerances Monte Carlo Gaussian" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let myChart = null;
+
+    // Gerador Normal (Box-Muller)
+    function randomNormal(mean, stdDev) {
+      let u1 = Math.random();
+      let u2 = Math.random();
+      while (u1 === 0) u1 = Math.random();
+      let z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+      return z0 * stdDev + mean;
+    }
+
+    // Função de erro de aproximação para probabilidade teórica
+    function erf(x) {
+      let a1 =  0.254829592, a2 = -0.284496736, a3 = 1.421413741;
+      let a4 = -1.453152027, a5 = 1.061405429, p  = 0.3275911;
+      let sign = x < 0 ? -1 : 1;
+      x = Math.abs(x);
+      let t = 1.0 / (1.0 + p * x);
+      let y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+      return sign * y;
+    }
+
+    function reRenderMath() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    }
+
+    function runSimulation() {
+      const N = parseInt(document.getElementById('sampleSize').value) || 10000;
+      const mu = parseFloat(document.getElementById('nominal').value) || 1000;
+      const tolPercent = parseFloat(document.getElementById('tolerance').value) || 5;
+      const sigmaMult = parseFloat(document.getElementById('sigmaLevel').value) || 3;
+
+      const tolVal = mu * (tolPercent / 100);
+      const minVal = mu - tolVal;
+      const maxVal = mu + tolVal;
+      const sigma = tolVal / sigmaMult;
+
+      let approved = 0;
+      let rejected = 0;
+      const numBins = 28;
+      const rangeMin = mu - tolVal * 1.8;
+      const rangeMax = mu + tolVal * 1.8;
+      const binWidth = (rangeMax - rangeMin) / numBins;
+
+      const binCounts = new Array(numBins).fill(0);
+      const binLabels = [];
+      const binColors = [];
+
+      for (let i = 0; i < numBins; i++) {
+        let bStart = rangeMin + i * binWidth;
+        let bEnd = bStart + binWidth;
+        let bCenter = (bStart + bEnd) / 2;
+        binLabels.push(bCenter.toFixed(1) + ' Ω');
+
+        if (bCenter >= minVal && bCenter <= maxVal) {
+          binColors.push('rgba(16, 185, 129, 0.85)'); // Verde (Aprovado)
+        } else {
+          binColors.push('rgba(239, 68, 68, 0.85)');  // Vermelho (Rejeitado)
+        }
+      }
+
+      for (let i = 0; i < N; i++) {
+        let val = randomNormal(mu, sigma);
+        if (val >= minVal && val <= maxVal) {
+          approved++;
+        } else {
+          rejected++;
+        }
+
+        let binIndex = Math.floor((val - rangeMin) / binWidth);
+        if (binIndex >= 0 && binIndex < numBins) {
+          binCounts[binIndex]++;
+        }
+      }
+
+      // Atualizar métricas
+      document.getElementById('approvedCount').innerText = approved.toLocaleString();
+      document.getElementById('rejectedCount').innerText = rejected.toLocaleString();
+      
+      const expProb = ((approved / N) * 100).toFixed(2);
+      document.getElementById('experimentalProb').innerText = expProb + '%';
+
+      const theoProbVal = erf(sigmaMult / Math.SQRT2) * 100;
+      document.getElementById('theoreticalProb').innerText = theoProbVal.toFixed(2) + '%';
+
+      // Atualizar gráfico Chart.js
+      const ctx = document.getElementById('resistorChart').getContext('2d');
+      if (myChart) myChart.destroy();
+
+      myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: binLabels,
+          datasets: [{
+            label: 'Quantidade de Resistores',
+            data: binCounts,
+            backgroundColor: binColors,
+            borderColor: 'rgba(30, 41, 59, 0.5)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: (items) => 'Faixa: ' + items[0].label,
+                label: (item) => 'Resistores: ' + item.raw
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94a3b8', font: { size: 9 }, maxRotation: 45 }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94a3b8' }
+            }
+          }
+        }
+      });
+
+      reRenderMath();
+    }
+
+    window.onload = function() {
+      runSimulation();
+    };
+  </script>
+</body>
+</html>
