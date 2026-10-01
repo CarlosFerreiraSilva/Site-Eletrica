@@ -360,7 +360,6 @@
 
   <header>
     <h1>⚡ Probabilidade na Engenharia: Tolerância de Resistores</h1>
-    <span class="badge">Apresentação: 3 Minutos</span>
   </header>
 
   <main>
@@ -426,22 +425,20 @@
 
     <!-- ROTEIRO DA APRESENTAÇÃO -->
     <section class="card full-width">
-      <h2>⏱️ Roteiro de Apresentação (3 Minutos)</h2>
+      <h2>⏱️ Roteiro de Apresentação</h2>
       
       <div class="script-timeline">
         <div class="timeline-item">
-          <div class="timeline-time">00:00 - 00:45</div>
           <div class="timeline-title">1. O Problema Prático na Engenharia</div>
           <div class="timeline-desc">
-            "Um resistor nominal de $1\text{ k}\Omega$ não possui exatamente $1000\,\Omega$ na prática. Devido a variações do processo produtivo, uma tolerância de $\pm 5\%$ define o intervalo aceitável entre $950\,\Omega$ e $1050\,\Omega$."
+            Um resistor nominal de $1\text{ k}\Omega$ não possui exatamente $1000\,\Omega$ na prática. Devido a variações do processo produtivo, uma tolerância de $\pm 5\%$ define o intervalo aceitável entre $950\,\Omega$ e $1050\,\Omega$.
           </div>
         </div>
 
         <div class="timeline-item">
-          <div class="timeline-time">00:45 - 01:45</div>
           <div class="timeline-title">2. Modelagem Gaussiana ($3\sigma$)</div>
           <div class="timeline-desc">
-            "Modelamos o valor da resistência $X$ como uma Variável Aleatória Contínua $X \sim \mathcal{N}(\mu, \sigma^2)$. Projetando a linha para que os limites de $\pm 50\,\Omega$ correspondam a $3\sigma$, obtemos um desvio-padrão $\sigma = 16{,}67\,\Omega$."
+            Modelamos o valor da resistência $X$ como uma Variável Aleatória Contínua $X \sim \mathcal{N}(\mu, \sigma^2)$. Projetando a linha para que os limites de $\pm 50\,\Omega$ correspondam a $3\sigma$, obtemos um desvio-padrão $\sigma = 16{,}67\,\Omega$.
           </div>
           <div class="math-block">
             $$\text{Distribuição: } X \sim \mathcal{N}(1000;\, 16{,}67^2)$$
@@ -450,18 +447,16 @@
         </div>
 
         <div class="timeline-item">
-          <div class="timeline-time">01:45 - 02:30</div>
           <div class="timeline-title">3. Resultados da Simulação</div>
           <div class="timeline-desc">
-            "Teoricamente, a área no intervalo de $[-3\sigma, +3\sigma]$ é de **99,73%**. Ao gerar 10.000 componentes por Monte Carlo, obtemos aproximadamente **9.973 resistores aprovados** e cerca de **27 rejeitados**."
+            Teoricamente, a área no intervalo de $[-3\sigma, +3\sigma]$ é de **99,73%**. Ao gerar 10.000 componentes por Monte Carlo, obtemos aproximadamente **9.973 resistores aprovados** e cerca de **27 rejeitados**.
           </div>
         </div>
 
         <div class="timeline-item">
-          <div class="timeline-time">02:30 - 03:00</div>
           <div class="timeline-title">4. Conclusão Industrial</div>
           <div class="timeline-desc">
-            "Essa análise probabilística permite calcular o *yield* (taxa de aproveitamento) de fabricação e prever o comportamento de circuitos em larga escala sem custos de prototipagem física."
+            Essa análise probabilística permite calcular o *yield* (taxa de aproveitamento) de fabricação e prever o comportamento de circuitos em larga escala sem custos de prototipagem física.
           </div>
         </div>
       </div>
