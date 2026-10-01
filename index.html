@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Análise Probabilística: Tolerância de Resistores</title>
   
   <!-- Fontes Google -->
@@ -37,28 +37,37 @@
       padding: 0;
     }
 
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.6;
-      padding: 1rem;
+      line-height: 1.5;
+      padding: 0.75rem;
+      -webkit-text-size-adjust: 100%;
     }
 
     @media (min-width: 768px) {
       body {
-        padding: 2rem;
+        padding: 1.5rem;
+        line-height: 1.6;
       }
     }
 
     header {
+      width: 100%;
       max-width: 1200px;
-      margin: 0 auto 2rem auto;
+      margin: 0 auto 1.25rem auto;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 1rem;
+      padding-bottom: 0.85rem;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     @media (min-width: 640px) {
@@ -66,43 +75,45 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
       }
     }
 
     header h1 {
-      font-size: 1.25rem;
+      font-size: clamp(1rem, 4.5vw, 1.4rem);
       color: var(--accent-cyan);
       font-family: 'Fira Code', monospace;
-    }
-
-    @media (min-width: 768px) {
-      header h1 {
-        font-size: 1.5rem;
-      }
+      line-height: 1.3;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     .badge {
       background: rgba(0, 242, 254, 0.1);
       color: var(--accent-cyan);
       border: 1px solid var(--accent-cyan);
-      padding: 0.25rem 0.75rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-family: 'Fira Code', monospace;
       align-self: flex-start;
+      white-space: nowrap;
     }
 
     main {
+      width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
+      grid-template-columns: 100%;
+      gap: 1rem;
     }
 
     @media (min-width: 1024px) {
       main {
-        grid-template-columns: 340px 1fr;
+        grid-template-columns: 320px 1fr;
+        gap: 1.5rem;
       }
     }
 
@@ -110,47 +121,57 @@
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 1.25rem;
+      padding: 0.85rem;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      min-width: 0; /* Previne estouro em CSS Grid */
     }
 
     @media (min-width: 768px) {
       .card {
-        padding: 1.5rem;
+        padding: 1.25rem;
       }
     }
 
     .card h2 {
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
+      font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+      margin-bottom: 0.85rem;
       color: var(--accent-cyan);
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 0.5rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      word-break: break-word;
     }
 
     .control-group {
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
+      width: 100%;
     }
 
     .control-group label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
     }
 
-    .control-group input, .control-group select {
+    .control-group input, 
+    .control-group select {
       width: 100%;
+      max-width: 100%;
       background: #0f172a;
       border: 1px solid var(--border-color);
       color: var(--text-main);
       padding: 0.65rem;
-      border-radius: 6px;
+      border-radius: 8px;
       font-family: 'Fira Code', monospace;
-      font-size: 0.9rem;
+      font-size: 16px; /* Evita zoom automático no iOS */
+      min-height: 44px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
     .btn {
@@ -159,47 +180,54 @@
       color: #000;
       font-weight: 700;
       border: none;
-      padding: 0.8rem;
-      border-radius: 6px;
+      padding: 0.75rem;
+      border-radius: 8px;
       cursor: pointer;
       transition: opacity 0.2s;
       font-size: 0.95rem;
+      min-height: 44px;
       margin-top: 0.5rem;
+      touch-action: manipulation;
     }
 
-    .btn:hover {
-      opacity: 0.9;
+    .btn:active {
+      opacity: 0.8;
     }
 
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      width: 100%;
     }
 
     @media (min-width: 640px) {
       .stats-grid {
         grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
       }
     }
 
     .stat-card {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--border-color);
-      padding: 0.85rem;
+      padding: 0.5rem;
       border-radius: 8px;
       text-align: center;
+      min-width: 0;
     }
 
     .stat-card .value {
-      font-size: 1.25rem;
+      font-size: clamp(0.95rem, 3.5vw, 1.2rem);
       font-weight: 700;
       font-family: 'Fira Code', monospace;
+      word-break: break-all;
     }
 
     .stat-card .label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--text-muted);
       text-transform: uppercase;
       margin-top: 0.2rem;
@@ -211,30 +239,36 @@
 
     .chart-container {
       position: relative;
-      height: 280px;
+      height: 220px;
       width: 100%;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .chart-container {
+        height: 280px;
+      }
     }
 
     @media (min-width: 768px) {
       .chart-container {
-        height: 350px;
+        height: 340px;
       }
     }
 
     .script-timeline {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1rem;
     }
 
     .timeline-item {
       border-left: 3px solid var(--accent-cyan);
-      padding-left: 1rem;
+      padding-left: 0.75rem;
     }
 
     .timeline-time {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--accent-cyan);
       font-family: 'Fira Code', monospace;
       font-weight: 600;
@@ -242,20 +276,21 @@
 
     .timeline-title {
       font-weight: 600;
-      font-size: 1rem;
-      margin: 0.25rem 0;
+      font-size: 0.9rem;
+      margin: 0.2rem 0;
     }
 
     .timeline-desc {
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
+      word-break: break-word;
     }
 
     .video-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.25rem;
-      margin-top: 1rem;
+      gap: 1rem;
+      margin-top: 0.85rem;
     }
 
     @media (min-width: 640px) {
@@ -274,13 +309,14 @@
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 0.85rem;
+      padding: 0.65rem;
+      min-width: 0;
     }
 
     .video-card h3 {
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       color: var(--accent-cyan);
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.5rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -309,12 +345,14 @@
 
     .math-block {
       background: #0f172a;
-      padding: 0.85rem;
+      padding: 0.65rem;
       border-radius: 8px;
       border: 1px solid var(--border-color);
-      margin: 0.75rem 0;
+      margin: 0.6rem 0;
       overflow-x: auto;
-      font-size: 0.9rem;
+      max-width: 100%;
+      -webkit-overflow-scrolling: touch;
+      font-size: 0.8rem;
     }
   </style>
 </head>
@@ -350,7 +388,7 @@
         <select id="sigmaLevel">
           <option value="1">1 Sigma (68.27% Aprovados)</option>
           <option value="2">2 Sigmas (95.45% Aprovados)</option>
-          <option value="3" selected>3 Sigmas (99.73% Aprovados - Padrão)</option>
+          <option value="3" selected>3 Sigmas (99.73% Aprovados)</option>
           <option value="4">4 Sigmas (99.993% Aprovados)</option>
         </select>
       </div>
@@ -373,7 +411,7 @@
         </div>
         <div class="stat-card">
           <div class="value val-cyan" id="experimentalProb">-</div>
-          <div class="label">Prob. Experimental</div>
+          <div class="label">Prob. Exp.</div>
         </div>
         <div class="stat-card">
           <div class="value" style="color: #a855f7;" id="theoreticalProb">-</div>
@@ -432,7 +470,7 @@
     <!-- SEÇÃO DE VÍDEOS REAIS DO YOUTUBE -->
     <section class="card full-width">
       <h2>🎥 Vídeos Recomendados de Acompanhamento</h2>
-      <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">
+      <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.75rem;">
         Exemplos teóricos e simulações em softwares da área de eletrônica.
       </p>
 
@@ -523,7 +561,8 @@
 
       let approved = 0;
       let rejected = 0;
-      const numBins = 28;
+      const isMobile = window.innerWidth < 640;
+      const numBins = isMobile ? 14 : 28;
       const rangeMin = mu - tolVal * 1.8;
       const rangeMax = mu + tolVal * 1.8;
       const binWidth = (rangeMax - rangeMin) / numBins;
@@ -536,12 +575,12 @@
         let bStart = rangeMin + i * binWidth;
         let bEnd = bStart + binWidth;
         let bCenter = (bStart + bEnd) / 2;
-        binLabels.push(bCenter.toFixed(1) + ' Ω');
+        binLabels.push(bCenter.toFixed(0) + 'Ω');
 
         if (bCenter >= minVal && bCenter <= maxVal) {
-          binColors.push('rgba(16, 185, 129, 0.85)'); // Verde (Aprovado)
+          binColors.push('rgba(16, 185, 129, 0.85)');
         } else {
-          binColors.push('rgba(239, 68, 68, 0.85)');  // Vermelho (Rejeitado)
+          binColors.push('rgba(239, 68, 68, 0.85)');
         }
       }
 
@@ -592,7 +631,7 @@
             legend: { display: false },
             tooltip: {
               callbacks: {
-                title: (items) => 'Faixa: ' + items[0].label,
+                title: (items) => 'Faixa: ~' + items[0].label,
                 label: (item) => 'Resistores: ' + item.raw
               }
             }
@@ -600,11 +639,20 @@
           scales: {
             x: {
               grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#94a3b8', font: { size: 9 }, maxRotation: 45 }
+              ticks: { 
+                color: '#94a3b8', 
+                font: { size: isMobile ? 8 : 10 }, 
+                maxRotation: isMobile ? 45 : 0,
+                autoSkip: true,
+                maxTicksLimit: isMobile ? 8 : 20
+              }
             },
             y: {
               grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#94a3b8' }
+              ticks: { 
+                color: '#94a3b8',
+                font: { size: isMobile ? 8 : 10 }
+              }
             }
           }
         }
@@ -616,6 +664,12 @@
     window.onload = function() {
       runSimulation();
     };
+
+    window.addEventListener('resize', () => {
+      if (myChart) {
+        runSimulation();
+      }
+    });
   </script>
 </body>
 </html>
